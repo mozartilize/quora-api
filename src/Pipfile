@@ -1,0 +1,35 @@
+[[source]]
+
+name = "pypi"
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+
+[packages]
+
+python-dotenv = "*"
+flask-sqlalchemy = "*"
+sqlalchemy = ">=1.2"
+"psycopg2-binary" = "*"
+flask-restful = "*"
+marshmallow = "*"
+flask-httpauth = "*"
+pyjwt = "*"
+passlib = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+flask = {git = "https://github.com/pallets/flask.git", editable = true, ref = "master"}
+bcrypt = "*"
+flask-migrate = "*"
+
+
+[dev-packages]
+
+watchdog = "*"
+flask-shell-ipython = "*"
+pylint = "*"
+
+
+[pipenv]
+
+allow_prereleases = true

@@ -1,0 +1,5 @@
+quora:
+  ✔ validate registration form (db constraints) @done(17-12-24 01:46)
+  ✘ logined users only get its account, not others @cancelled(17-12-24 01:46)
+  ☐ tests
+  ☐ OAuth

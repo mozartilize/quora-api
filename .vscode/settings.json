@@ -1,0 +1,5 @@
+{
+  "python.pythonPath": "/home/mozart/.local/share/virtualenvs/quora-84aL39hH/bin/python3",
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
+}
