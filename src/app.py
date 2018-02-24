@@ -1,1 +1,3 @@
-from quora import app  # noqa
+from quora import create_app
+
+app = create_app('settings')

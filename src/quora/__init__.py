@@ -1,38 +1,24 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, g
 from flask_migrate import Migrate
-from flask_marshmallow import Marshmallow
-from flask_httpauth import HTTPBasicAuth
-from passlib.context import CryptContext
+
+from quora.tables import db
+from quora.services.password import passlib_ext
 
 
-app = Flask(__name__)
-app.config.from_object('settings')
+def create_app(setting_object):
+    app = Flask(__name__)
+    app.config.from_object(setting_object)
 
-pw_context = CryptContext(schemes=app.config['PASSLIB_SCHEMES'],
-                          deprecated=app.config['PASSLIB_DEPRECATED'])
+    db.init_app(app)
 
-# regist third parties to app
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-from quora import tables  # noqa, to maeke migate work
+    migrate = Migrate(app, db)
 
-ma = Marshmallow(app)
+    passlib_ext.init_app(app)
 
-auth = HTTPBasicAuth()
+    # blueprints
+    from quora.blueprints.api import api_bp  # noqa
 
-# blueprints
-# from quora.blueprints.api import api_bp  # noqa
+    # blueprint registers
+    app.register_blueprint(api_bp)
 
-# blueprint registers
-# app.register_blueprint(api_bp)
-
-
-__all__ = [
-    'app',
-    'db',
-]
-
-@app.route('/')
-def hello_world():
-    return 'Hi you'
+    return app

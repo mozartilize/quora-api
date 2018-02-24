@@ -1,17 +1,18 @@
 from marshmallow import validate, ValidationError
-from sqlalchemy import text
+from sqlalchemy import text, select
+
+from quora.tables import db
 
 not_blank = validate.Length(min=1, error='Field cannot be blank')
 
 
-def unique(model_cls, field, value):
+def unique(table, field, value):
     '''
     unique(Account, 'username', 'john')
     '''
-    obj = model_cls.query.filter(
-        text('{0}=:{0}'.format(field))
-        ).params({field: value}).first()
-    if obj:
-        raise ValidationError(
-            '{} already exists'.format(field.capitalize()),
-            field)
+    q = select([table.c.id])\
+        .where(text('{0}=:{0}'.format(field))).params({field: value})
+    with db.engine.connect() as conn:
+        if conn.execute(q).fetchone():
+            raise ValidationError(
+                '{} already exists'.format(field.capitalize()), field)

@@ -1,5 +1,5 @@
-from .accounts import accounts
+from flask_sqlalchemy import SQLAlchemy
 
-__all__ = [
-    'accounts',
-]
+db = SQLAlchemy()
+
+from .accounts import accounts

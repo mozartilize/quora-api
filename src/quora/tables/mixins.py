@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Table, Column, DateTime, text, TIMESTAMP
-from quora import db
+from . import db
 
 meta = db.metadata
 

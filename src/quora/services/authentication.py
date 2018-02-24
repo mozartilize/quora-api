@@ -1,12 +1,12 @@
-from flask import current_app
+from flask import current_app, g
 import jwt
 import datetime
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import select
-from quora import db
-from quora.tables import accounts
+from flask_httpauth import HTTPBasicAuth
+from quora.tables import db, accounts
 
-engine = db.engine
+auth = HTTPBasicAuth()
 
 
 def generate_auth_token(account_id):
@@ -21,9 +21,9 @@ def verify_auth_token(token):
     try:
         payload = jwt.decode(token, current_app.config['SECRET_KEY'])
         try:
-            with db.engine.connection() as conn:
-                query = select([accounts.c.id])\
-                    .where(accounts.c.id == payload['account_id'])
+            query = select([accounts.c.id])\
+                .where(accounts.c.id == payload['account_id'])
+            with db.engine.connect() as conn:
                 if conn.execute(query).fetchone():
                     return (True, payload['account_id'])
                 else:
