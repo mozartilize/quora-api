@@ -1,10 +1,10 @@
-# Requirements:
+# Requirements
 - Python 3.6
 - Pipenv
 - Docker
 
 
-# Setup:
+# Setup
 1. Install packages:
 
 ```bash
@@ -24,8 +24,29 @@ docker service create \
 ```
 
 
-# Run:
+# Run
 
 ```bash
 ../src$ FLASK_ENV=development flask run
 ```
+
+
+# Application structure
+
+This project is where I try something new about SQLAlchemy core, that means there is no more ORM.
+
+- tables/ contains all table definitions. Any change will be detected by Alembic for migrations.
+- repository/ is where queries executed and data retrieved
+- schemas/ is where user input data validated and data serialization
+- services/ contains business code
+
+### Flows
+
+`users post data ---> endpoints ---> services(schemas, repository) ---> database(tables)`
+
+`users request resources ---> endpoints ---> services(repository, schemas) ---> return resources`
+
+
+# Guideline
+
+This project uses pylint and editorconfig for coding style check
