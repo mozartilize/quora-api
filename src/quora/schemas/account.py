@@ -21,6 +21,13 @@ class RegistrationSchema(Schema):
                               unique(accounts, 'username', value))
     password = fields.Str(required=True)
 
+    @post_load
+    def make_object(self, data):
+        pw_hash = passlib_ext.crypt_ctx.hash(data['password']).encode('utf-8')
+        del data['password']
+        data['pw_hash'] = pw_hash
+        return data
+
 
 class LoginSchema(Schema):
     username_or_email = fields.Str(required=True, validate=not_blank)

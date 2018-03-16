@@ -1,8 +1,8 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from .resources import (
-    # accounts,
+from . import (
+    accounts,
     auth,
 )
 
@@ -10,7 +10,7 @@ from .resources import (
 api_bp = Blueprint('api', __name__, url_prefix='/api/v1')
 api = Api(api_bp)
 
-# api.add_resource(accounts.AccountListAPI, '/accounts')
-# api.add_resource(accounts.AccountAPI, '/accounts/<int:id>')
+api.add_resource(accounts.AccountListAPI, '/accounts')
+api.add_resource(accounts.AccountAPI, '/accounts/<uuid:id>')
 
 api.add_resource(auth.AuthApi, '/auth')
