@@ -3,7 +3,10 @@ from flask_restful import Resource
 from sqlalchemy import select
 from marshmallow.exceptions import ValidationError
 
-from quora.services.authentication import auth
+from quora.services.authentication import (
+    auth,
+    verify_activation_token,
+)
 from quora.tables import db, accounts
 from quora.schemas.account import (
     AccountSchema,
@@ -28,6 +31,18 @@ class AccountAPI(Resource):
 
     def put(self):
         pass
+
+
+class AccountActivationAPI(Resource):
+    def get(self, id, token):
+        q = select([accounts.c.id])\
+            .where(accounts.c.id == str(id))
+        with db.engine.connect() as conn:
+            acc = conn.execute(q).fetchone()
+            if not acc:
+                return abort(404)
+            else:
+                pass
 
 
 class AccountListAPI(Resource):
