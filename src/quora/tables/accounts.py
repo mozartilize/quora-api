@@ -1,4 +1,8 @@
-from sqlalchemy import Table, Column, Integer, String, text
+from sqlalchemy import (
+    Table, Column,
+    Integer, String, TIMESTAMP,
+    text,
+)
 from sqlalchemy.dialects.postgresql import UUID, BYTEA
 from . import db
 
@@ -13,5 +17,6 @@ accounts = Table('accounts', meta,
     Column('username', String(80), nullable=False, unique=True),
     Column('email', String, nullable=False, unique=True),
     Column('pw_hash', BYTEA, nullable=False),
+    Column('activated_at', TIMESTAMP(True)),
     *timestamps
 )
