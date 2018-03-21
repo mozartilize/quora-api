@@ -18,6 +18,7 @@
 docker service create \
 --name quoradb \
 --mount type=volume,source=quoradb,destination=/var/lib/postgresql/data \
+-p 5001:5432 \
 -e POSTGRES_PASSWORD=quora \
 -e POSTGRES_USER=quora \
 -e POSTGRES_DB=quora_development postgres:9.6
