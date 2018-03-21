@@ -3,8 +3,7 @@
 .flaskenv
 *.pyc
 *.pyo
-env
-env*
+env/
 dist
 build
 *.egg
