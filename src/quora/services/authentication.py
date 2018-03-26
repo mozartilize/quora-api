@@ -1,14 +1,12 @@
-from functools import wraps
 from flask import current_app, g
 import jwt
 import datetime
 from dateutil.relativedelta import relativedelta
-from sqlalchemy import select
-from sqlalchemy.exc import DataError, ProgrammingError
 from flask_httpauth import HTTPBasicAuth
-from quora.tables import db, accounts
+from marshmallow.exceptions import ValidationError
 
-auth = HTTPBasicAuth()
+from quora.schemas.account import LoginSchema
+from quora.schemas.token import verify_auth_token
 
 
 def generate_auth_token(account_id, secs=600):
@@ -19,49 +17,22 @@ def generate_auth_token(account_id, secs=600):
     return jwt.encode(payload, current_app.config['SECRET_KEY'])
 
 
-def verify_token(token, callback, **kwargs):
+auth = HTTPBasicAuth()
+
+
+@auth.verify_password
+def verify_password(username_or_email_or_token, password):
+    result = verify_auth_token(username_or_email_or_token)
+    if result[0]:
+        g.account_id = result[1]
+        return True
+    s = LoginSchema()
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'])
-        return callback(payload, **kwargs)
-    except jwt.ExpiredSignatureError:
-        return False, 'Token was expired'
-    except jwt.DecodeError:
-        return False, 'Invalid token'
-
-
-def check_payload(payload):
-    """
-    for replacing when testing with faked data
-    """
-    try:
-        query = select([accounts.c.id])\
-            .where(accounts.c.id == str(payload['account_id']))
-        with db.engine.connect() as conn:
-            if conn.execute(query).fetchone():
-                return True, payload['account_id']
-            else:
-                return False, 'Invalid token'
-    except KeyError:
-        return False, 'Missing account id'
-    except (DataError, ProgrammingError):
-        return False, 'Invalid token'
-
-
-def verify_activation_token(token,
-                            loaded_id=None,
-                            check_payload=check_payload):
-    def self_verify(payload, loaded_id):
-        try:
-            if loaded_id and loaded_id == payload['account_id']:
-                return True, payload['account_id']
-            elif loaded_id:
-                return False, 'Invalid token'
-        except KeyError:
-            return False, 'Missing account id'
-        return check_payload(payload)
-
-    return verify_token(token, self_verify, loaded_id=loaded_id)
-
-
-def verify_auth_token(token, check_payload=check_payload):
-    return verify_token(token, check_payload)
+        result = s.load({
+            'username_or_email': username_or_email_or_token,
+            'password': password,
+        }).data
+        g.account_id = result['id']
+        return True
+    except ValidationError:
+        return False
