@@ -8,7 +8,6 @@ from marshmallow.exceptions import ValidationError
 
 from quora.services.authentication import (
     auth,
-    verify_activation_token,
     generate_auth_token,
 )
 from quora.tables import db, accounts
@@ -16,7 +15,8 @@ from quora.schemas.account import (
     AccountSchema,
     RegistrationSchema,
 )
-from quora.repository.account import regist_account
+from quora.schemas.token import ActivationTokenSchema
+from quora.repository.account import regist_account, activate_account
 
 
 class AccountAPI(Resource):
@@ -50,25 +50,15 @@ class AccountActivationAPI(Resource):
                 return {'token': token}, 200
 
     def post(self):
-        token = request.json.get('token')
-        if not token:
-            return {'message': 'Missing token'}, 400
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'])
+        s = ActivationTokenSchema()
         try:
-            q = select([accounts.c.id])\
-                .where(accounts.c.id == payload['account_id'])
-        except KeyError:
-            return {'message': 'Invalid token'}, 400
-        with db.engine.connect() as conn:
-            acc = conn.execute(q).fetchone()
-            if acc:
-                stmt = accounts.update()\
-                    .where(accounts.c.id == acc.id)\
-                    .values(activated_at=datetime.now(tz=pytz.utc))
-                conn.execute(stmt)
-                return {}, \
-                    200, \
-                    {'Location': url_for('.accountapi', id=acc.id)}
+            data = s.load(request.json or request.form)
+            acc = activate_account(data)
+            return {}, \
+                200, \
+                {'Location': url_for('.accountapi', id=acc.id)}
+        except ValidationError as e:
+            return {'message': '', 'errors': e.messages}, 400
 
 
 
