@@ -28,11 +28,11 @@ def verify_password(username_or_email_or_token, password):
         return True
     s = LoginSchema()
     try:
-        result = s.load({
+        data = s.load({
             'username_or_email': username_or_email_or_token,
             'password': password,
-        }).data
-        g.account_id = result['id']
+        })
+        g.account_id = data['id']
         return True
     except ValidationError:
         return False

@@ -2,6 +2,7 @@ from flask import g
 from marshmallow import fields, post_load, ValidationError, Schema
 from sqlalchemy import or_, select
 from quora.tables import db, accounts
+from quora.repository import repo
 from quora.services.password import passlib_ext
 from .validations import not_blank, unique
 
@@ -40,15 +41,14 @@ class LoginSchema(Schema):
                 accounts.c.username == data['username_or_email'],
                 accounts.c.email == data['username_or_email']
             ))
-        with db.engine.connect() as conn:
-            acc = conn.execute(query).fetchone()
-            if acc:
-                try:
-                    if passlib_ext.crypt_ctx.verify(data['password'], acc['pw_hash']):
-                        return {'id': acc['id']}
-                    else:
-                        raise ValidationError('Password is incorrect', 'password')
-                except (TypeError, ValueError):
+        acc = repo(query).fetchone()
+        if acc:
+            try:
+                if passlib_ext.crypt_ctx.verify(data['password'], acc['pw_hash']):
+                    return {'id': acc['id']}
+                else:
                     raise ValidationError('Password is incorrect', 'password')
-            else:
-                raise ValidationError('Not found', 'username_or_email')
+            except (TypeError, ValueError):
+                raise ValidationError('Password is incorrect', 'password')
+        else:
+            raise ValidationError('Not found', 'username_or_email')
