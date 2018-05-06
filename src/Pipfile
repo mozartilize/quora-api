@@ -18,9 +18,9 @@ pyjwt = "*"
 passlib = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
-flask = {git = "https://github.com/pallets/flask.git", editable = true, ref = "master"}
 bcrypt = "*"
 flask-migrate = "*"
+flask = "*"
 
 
 [dev-packages]
