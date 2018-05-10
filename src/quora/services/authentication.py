@@ -12,6 +12,16 @@ from quora.schemas.token import verify_auth_token
 def generate_auth_token(account_id, secs=600):
     payload = {
         'exp': datetime.datetime.utcnow() + relativedelta(seconds=secs),
+        'sub': 'auth',
+        'account_id': account_id,
+    }
+    return jwt.encode(payload, current_app.config['SECRET_KEY'])
+
+
+def generate_activation_token(account_id, secs=15*60):
+    payload = {
+        'exp': datetime.datetime.utcnow() + relativedelta(seconds=secs),
+        'sub': 'activation',
         'account_id': account_id,
     }
     return jwt.encode(payload, current_app.config['SECRET_KEY'])

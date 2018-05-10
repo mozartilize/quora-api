@@ -34,27 +34,27 @@ def check_payload(callback, payload):
 
 def verify_activation_token(token):
     def self_verify(payload):
-        query = select([accounts.c.id, accounts.c.activated_at])\
-            .where(accounts.c.id == payload['account_id'])
-        acc = repo(query).fetchone()
-        if acc:
-            if acc.activated_at:
-                return False, 'Account already activated', payload
-            return True, '', payload
-        else:
-            return False, 'Invalid token', payload
+        if payload.get('sub') == 'activation':
+            query = select([accounts.c.id, accounts.c.activated_at])\
+                .where(accounts.c.id == payload['account_id'])
+            acc = repo(query).fetchone()
+            if acc:
+                if acc.activated_at:
+                    return False, 'Account already activated', payload
+                return True, '', payload
+        return False, 'Invalid token', payload
 
     return verify_token(token, self_verify)
 
 
 def verify_auth_token(token):
     def self_verify(payload):
-        query = select([accounts.c.id])\
-            .where(accounts.c.id == payload['account_id'])
-        if repo(query).fetchone():
-            return True, '', payload
-        else:
-            return False, 'Invalid token', payload
+        if payload.get('sub') == 'auth':
+            query = select([accounts.c.id])\
+                .where(accounts.c.id == payload['account_id'])
+            if repo(query).fetchone():
+                return True, '', payload
+        return False, 'Invalid token', payload
     return verify_token(token, self_verify)
 
 

@@ -9,6 +9,7 @@ from marshmallow.exceptions import ValidationError
 from quora.services.authentication import (
     auth,
     generate_auth_token,
+    generate_activation_token,
 )
 from quora.tables import db, accounts
 from quora.schemas.account import (
@@ -39,14 +40,16 @@ class AccountAPI(Resource):
 
 class AccountActivationAPI(Resource):
     def get(self, id):
-        q = select([accounts.c.id])\
+        q = select([accounts.c.id, accounts.c.activated_at])\
             .where(accounts.c.id == str(id))
         with db.engine.connect() as conn:
             acc = conn.execute(q).fetchone()
             if not acc:
                 return abort(404)
+            elif acc and not acc.activated_at:
+                return abort(400)
             else:
-                token = generate_auth_token(acc.id, secs=15*60)
+                token = generate_activation_token(acc.id)
                 return {'token': token}, 200
 
     def post(self):
