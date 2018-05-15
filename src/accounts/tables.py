@@ -4,11 +4,7 @@ from sqlalchemy import (
     text,
 )
 from sqlalchemy.dialects.postgresql import UUID, BYTEA
-from . import db
-
-from .mixins import timestamps
-
-meta = db.metadata
+from utils.tables.mixins import timestamps, meta
 
 
 accounts = Table('accounts', meta,

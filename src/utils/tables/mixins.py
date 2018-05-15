@@ -1,8 +1,9 @@
 from datetime import datetime
-from sqlalchemy import Table, Column, DateTime, text, TIMESTAMP
-from . import db
+from sqlalchemy import Table, Column, DateTime, text, TIMESTAMP, MetaData
 
-meta = db.metadata
+
+meta = MetaData()
+
 
 timestamps = (
     Column('created_at', TIMESTAMP(True),

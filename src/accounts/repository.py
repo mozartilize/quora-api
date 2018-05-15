@@ -1,6 +1,6 @@
 from sqlalchemy import select, insert, update
-from quora.tables import accounts
-from . import repo
+from utils.tables.repository import repo
+from accounts.tables import accounts
 
 
 def all(columns=[]):
