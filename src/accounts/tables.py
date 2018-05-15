@@ -13,6 +13,6 @@ accounts = Table('accounts', meta,
     Column('username', String(80), nullable=False, unique=True),
     Column('email', String, nullable=False, unique=True),
     Column('pw_hash', BYTEA, nullable=False),
-    Column('activated_at', TIMESTAMP(True)),
+    Column('activated_at', TIMESTAMP),
     *timestamps
 )

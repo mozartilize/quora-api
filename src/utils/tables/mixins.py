@@ -6,11 +6,11 @@ meta = MetaData()
 
 
 timestamps = (
-    Column('created_at', TIMESTAMP(True),
+    Column('created_at', TIMESTAMP,
            nullable=False,
            default=datetime.utcnow(),
            server_default=text('statement_timestamp()')),
-    Column('updated_at', TIMESTAMP(True),
+    Column('updated_at', TIMESTAMP,
            onupdate=datetime.utcnow(),
            server_onupdate=text('statement_timestamp()')),
 )
