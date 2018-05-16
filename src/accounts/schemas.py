@@ -41,18 +41,22 @@ class LoginSchema(Schema):
 
     @post_load
     def make_object(self, data):
-        query = select([accounts.c.id, accounts.c.pw_hash])\
+        query = select([accounts.c.id,
+                        accounts.c.activated_at,
+                        accounts.c.pw_hash])\
             .where(or_(
                 accounts.c.username == data['username_or_email'],
                 accounts.c.email == data['username_or_email']
             ))
         acc = repo(query).fetchone()
         if acc:
+            if not acc.activated_at:
+                raise ValidationError('Account not activated')
             try:
-                if passlib_ext.crypt_ctx.verify(data['password'], acc['pw_hash']):
+                if passlib_ext.crypt_ctx\
+                        .verify(data['password'], acc['pw_hash']):
                     return {'id': acc['id']}
-                else:
-                    raise ValidationError('Password is incorrect', 'password')
+                raise ValidationError('Password is incorrect', 'password')
             except (TypeError, ValueError):
                 raise ValidationError('Password is incorrect', 'password')
         else:
@@ -70,9 +74,6 @@ def verify_token(token, callback):
 
 
 def check_payload(callback, payload):
-    """
-    for replacing when testing with faked data
-    """
     try:
         return callback(payload)
     except KeyError:
@@ -102,7 +103,7 @@ def verify_auth_token(token):
             query = select([accounts.c.id])\
                 .where(accounts.c.id == payload['account_id'])
             if repo(query).fetchone():
-                return True, '', payload
+                return True, '', payload['account_id']
         return False, 'Invalid token', payload
     return verify_token(token, self_verify)
 

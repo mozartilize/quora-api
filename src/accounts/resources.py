@@ -1,8 +1,8 @@
 from datetime import datetime
 import jwt
 import pytz
-from flask import request, abort, url_for, current_app, g
-from flask_restful import Resource
+from flask import request, url_for, current_app, g
+from flask_restful import Resource, abort
 from sqlalchemy import select
 from marshmallow.exceptions import ValidationError
 
