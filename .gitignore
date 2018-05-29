@@ -9,6 +9,7 @@ build
 *.egg
 *.egg-info
 .tox
+.pytest_cache/
 .cache/
 .idea/
 
