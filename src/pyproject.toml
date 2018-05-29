@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "quora"
+version = "0.1.0"
+description = "Quora-liked app"
+authors = ["arshavindn <mozartilize@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.6.2"
+flask = "^1.0"
+sqlalchemy = "^1.2"
+psycopg2-binary = "^2.7"
+flask-restful = "^0.3.6"
+python-dotenv = "^0.8.2"
+marshmallow = {version = "^3.0-beta.11", allows-prereleases = true}
+flask-migrate = "^2.1"
+pyjwt = "^1.6"
+passlib = "^1.7"
+flask-sqlalchemy = "^2.3"
+flask-httpauth = "^3.2"
+bcrypt = {version = "^3.1", optional = true}
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.5"
+watchdog = "^0.8.3"
+flask-shell-ipython = "^0.3.0"
+pylint = "^1.9"
