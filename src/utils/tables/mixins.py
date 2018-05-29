@@ -1,11 +1,13 @@
 from datetime import datetime
-from sqlalchemy import Table, Column, DateTime, text, TIMESTAMP, MetaData
+from sqlalchemy import Table, Column, Integer, DateTime, text, TIMESTAMP, \
+    MetaData
 
 
 meta = MetaData()
 
+int_id = lambda: Column('id', Integer, primary_key=True)
 
-timestamps = (
+timestamps = lambda: (
     Column('created_at', TIMESTAMP,
            nullable=False,
            default=datetime.utcnow(),
