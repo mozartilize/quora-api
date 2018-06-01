@@ -6,7 +6,7 @@ from quora.tables import db
 
 @pytest.fixture
 def app():
-    app = create_app('tests.test_quora.settings')
+    app = create_app('test_quora.settings')
     with app.app_context():
         db.metadata.create_all(db.engine)
 
