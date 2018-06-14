@@ -1,6 +1,6 @@
 # Requirements
 - Python 3.6
-- Pipenv
+- Poetry
 - Docker
 
 
@@ -8,7 +8,7 @@
 1. Install packages:
 
 ```bash
-../src$ pipenv install --ignore-pipfile --dev
+../src$ poetry install
 ```
 
 
@@ -39,13 +39,12 @@ This project is where I try something new about SQLAlchemy core, that means ther
 - tables/ contains all table definitions. Any change will be detected by Alembic for migrations.
 - repository/ is where queries executed and data retrieved
 - schemas/ is where user input data validated and data serialization
-- services/ contains business code
 
 ### Flows
 
-`users post data ---> endpoints ---> services(schemas, repository) ---> database(tables)`
+`users post data ---> endpoints ---> (schemas, repository) ---> database(tables)`
 
-`users request resources ---> endpoints ---> services(repository, schemas) ---> return resources`
+`users request resources ---> endpoints ---> (repository, schemas) ---> return resources`
 
 
 # Guideline
