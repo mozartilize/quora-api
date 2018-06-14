@@ -26,7 +26,8 @@ setup(
         'passlib>=1.7,<2',
         'flask-sqlalchemy>=2.3,<3',
         'flask-httpauth>=3.2,<4',
-        'marshmallow>=3.0.0b11,<3.1'
+        'marshmallow>=3.0.0b11,<3.1',
+        'flask-mail>=0.9.1,<1',
     ],
     extras_require={
         'passlib': ['bcrypt'],

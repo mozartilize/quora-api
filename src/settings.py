@@ -16,3 +16,6 @@ PASSLIB_CONTEXT = {
     'schemes': ['pbkdf2_sha512', 'bcrypt'],
     'deprecated': ['auto'],
 }
+
+MAIL_SERVER = 'localhost'
+MAIL_PORT = '1025'

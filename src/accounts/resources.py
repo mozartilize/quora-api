@@ -6,16 +6,14 @@ from flask_restful import Resource, abort
 from sqlalchemy import select
 from marshmallow.exceptions import ValidationError
 
-from accounts.authentication import (
-    auth,
-    generate_auth_token,
-    generate_activation_token,
-)
+from utils.tables.repository import repo
+from accounts.authentication import auth, generate_auth_token, \
+    generate_activation_token
 from accounts.tables import accounts
 from accounts.schemas import AccountSchema, RegistrationSchema, \
     ActivationTokenSchema
 from accounts.repository import regist_account, activate_account
-from utils.tables.repository import repo
+from accounts import mailer
 
 
 class AccountAPI(Resource):
@@ -36,22 +34,10 @@ class AccountAPI(Resource):
 
 
 class AccountActivationAPI(Resource):
-    def get(self, id):
-        q = select([accounts.c.id, accounts.c.activated_at])\
-            .where(accounts.c.id == str(id))
-        acc = repo(q).fetchone()
-        if not acc:
-            return abort(404)
-        elif acc and not acc.activated_at:
-            return abort(400)
-        else:
-            token = generate_activation_token(acc.id)
-            return {'token': token}, 200
-
-    def post(self):
+    def get(self):
         s = ActivationTokenSchema()
         try:
-            data = s.load(request.json or request.form)
+            data = s.load(request.args)  # get token from query params
             acc = activate_account(data)
             return {}, \
                 200, \
@@ -59,6 +45,22 @@ class AccountActivationAPI(Resource):
         except ValidationError as e:
             return {'message': '', 'errors': e.messages}, 400
 
+
+class AccountActivationTokenAPI(Resource):
+    def post(self, id):
+        q = select([accounts.c.id,
+                    accounts.c.email,
+                    accounts.c.activated_at])\
+            .where(accounts.c.id == str(id))
+        acc = repo(q).fetchone()
+        if not acc:
+            return abort(404)
+        elif acc and acc.activated_at:
+            return abort(400)
+        else:
+            token = generate_activation_token(acc.id)
+            mailer.send_activation_token(acc.email, token)
+            return '', 202
 
 
 class AccountListAPI(Resource):

@@ -1,6 +1,7 @@
 import os.path
 from flask import Flask, g
 from flask_migrate import Migrate
+from flask_mail import Mail
 
 from quora.tables import db
 from accounts import passlib_ext
@@ -14,6 +15,8 @@ def create_app(setting_object):
     db.init_app(app)
 
     Migrate(app, db, directory=os.path.join(root_path, 'migrations'))
+    mailer = Mail(app)
+    app.extensions['mailer'] = mailer
 
     passlib_ext.init_app(app)
 
@@ -22,5 +25,7 @@ def create_app(setting_object):
 
     # blueprint registers
     app.register_blueprint(api_bp)
+
+    app.jinja_loader.searchpath.append('accounts/templates')
 
     return app
