@@ -67,12 +67,13 @@ class AccountListAPI(Resource):
     def post(self):
         rs = RegistrationSchema()
         try:
-            data = rs.load(request.json)
-            result = regist_account(data)
-            uuid = result.inserted_primary_key[0]
-            return {'id': uuid}, \
+            data = rs.load(request.form or request.json)
+            acc = regist_account(data)
+            token = generate_activation_token(acc.id)
+            mailer.send_activation_token(acc.email, token)
+            return {'id': acc.id}, \
                 201, \
-                {'Location': url_for('.accountapi', id=uuid)}
+                {'Location': url_for('.accountapi', id=acc.id)}
         except ValidationError as e:
             return {'message': '', 'errors': e.messages}, 400
 

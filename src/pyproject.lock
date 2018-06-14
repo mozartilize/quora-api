@@ -51,9 +51,6 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 platform = "*"
 
 [package.dependencies]
-"backports.functools-lru-cache" = "*"
-singledispatch = "*"
-enum34 = ">=1.1.3"
 wrapt = "*"
 six = "*"
 lazy-object-proxy = "*"
@@ -184,7 +181,7 @@ Flask = "*"
 blinker = "*"
 [[package]]
 name = "flask-migrate"
-version = "2.1.1"
+version = "2.2.0"
 description = "SQLAlchemy database migrations for Flask applications using Alembic"
 category = "main"
 optional = false
@@ -192,9 +189,9 @@ python-versions = "*"
 platform = "any"
 
 [package.dependencies]
-Flask = ">=0.9"
-Flask-SQLAlchemy = ">=1.0"
 alembic = ">=0.6"
+Flask-SQLAlchemy = ">=1.0"
+Flask = ">=0.9"
 [[package]]
 name = "flask-restful"
 version = "0.3.6"
@@ -244,12 +241,9 @@ python-versions = ">=3.3"
 platform = "Linux"
 
 [package.dependencies]
-win-unicode-console = ">=0.5"
 colorama = "*"
 appnope = "*"
 pexpect = "*"
-pathlib2 = "*"
-typing = "*"
 backcall = "*"
 pygments = "*"
 prompt-toolkit = ">=1.0.15,<2.0.0"
@@ -277,8 +271,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 platform = "*"
 
-[package.dependencies]
-futures = "*"
 [[package]]
 name = "itsdangerous"
 version = "0.24"
@@ -417,8 +409,6 @@ optional = false
 python-versions = "*"
 platform = "*"
 
-[package.dependencies]
-pathlib2 = "*"
 [[package]]
 name = "pluggy"
 version = "0.6.0"
@@ -505,9 +495,6 @@ platform = "*"
 
 [package.dependencies]
 colorama = "*"
-"backports.functools-lru-cache" = "*"
-configparser = "*"
-singledispatch = "*"
 mccabe = "*"
 isort = ">=4.2.5"
 six = "*"
@@ -523,7 +510,6 @@ platform = "unix"
 
 [package.dependencies]
 colorama = "*"
-funcsigs = "*"
 pluggy = ">=0.5,<0.7"
 atomicwrites = ">=1.0"
 more-itertools = ">=4.0.0"
@@ -579,6 +565,15 @@ python-versions = "*"
 platform = "Any"
 
 [[package]]
+name = "setuptools"
+version = "39.2.0"
+description = "Easily download, build, install, upgrade, and uninstall Python packages"
+category = "dev"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+platform = "*"
+
+[[package]]
 name = "simplegeneric"
 version = "0.8.1"
 description = "Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)"
@@ -618,7 +613,6 @@ platform = "Linux,Mac OS X,Windows"
 decorator = "*"
 ipython-genutils = "*"
 six = "*"
-enum34 = "*"
 [[package]]
 name = "watchdog"
 version = "0.8.3"
@@ -682,7 +676,7 @@ decorator = [ "2c51dff8ef3c447388fe5e4453d24a2bf128d3a4c32af3fabef1f01c6851ab82"
 flask = [ "a080b744b7e345ccfcbc77954861cb05b3c63786e93f2b3875e0913d44b43f05", "2271c0070dbcb5275fad4a82e29f23ab92682dc45f9dfbc22c02ba9b9322ce48",]
 flask-httpauth = [ "c2ba01d832827f1d1bab39b321a134f9dded8d48f87e71c86ee16848d8e5a422", "5f4ba7ab79103e28b566c6a0592076312d17c716e079c66ca9ffe21a7871ee8d",]
 flask-mail = [ "22e5eb9a940bf407bcf30410ecc3708f3c56cc44b29c34e1726fe85006935f41",]
-flask-migrate = [ "493f9b3795985b9b4915bf3b7d16946697f027b73545384e7d9e3a79f989d2fe", "b709ca8642559c3c5a81a33ab10839fa052177accd5ba821047a99db635255ed",]
+flask-migrate = [ "2697d2a9f9cd7de14a01a3de9f6e27d44ccffe1a2bf59bae2b2bb22cecb9d86a", "654af52ce82733fa066dc2a19cb462c52e56871a4785f03895a5bb43ea5a4e5b",]
 flask-restful = [ "e2f1b8063de3944b94c7f8be5cee4d2161db0267c54c5b757d875295061776fa", "5795519501347e108c436b693ff9a4d7b373a3ac9069627d64e4001c05dd3407",]
 flask-shell-ipython = [ "9da2ca2eccfa6527d7a76ca5bc8d8cdf5485206ff917b9c50851acc35a867d37", "ac80a798f7b73b090c9a184f9c27b0d59481544f7fb8726cf4dd74c2d0aa2a15",]
 flask-sqlalchemy = [ "3bc0fac969dd8c0ace01b32060f0c729565293302f0c4269beed154b46bec50b", "5971b9852b5888655f11db634e87725a9031e170f37c0ce7851cf83497f56e53",]
@@ -718,6 +712,7 @@ python-dotenv = [ "4965ed170bf51c347a89820e8050655e9c25db3837db6602e906b6d850fad
 python-editor = [ "a3c066acee22a1c94f63938341d4fb374e3fdd69366ed6603d7b24bed1efc565",]
 pytz = [ "65ae0c8101309c45772196b21b74c46b2e5d11b6275c45d251b150d5da334555", "c06425302f2cf668f1bba7a0a03f3c1d34d4ebeef2c72003da308b3947c7f749",]
 pyyaml = [ "3262c96a1ca437e7e4763e2843746588a965426550f3797a79fca9c6199c431f", "16b20e970597e051997d90dc2cddc713a2876c47e3d92d59ee198700c5427736", "e863072cdf4c72eebf179342c94e6989c67185842d9997960b3e69290b2fa269", "bc6bced57f826ca7cb5125a10b23fd0f2fff3b7c4701d64c439a300ce665fff8", "c01b880ec30b5a6e6aa67b09a2fe3fb30473008c85cd6a67359a1b15ed6d83a4", "827dc04b8fa7d07c44de11fabbc888e627fa8293b695e0f99cb544fdfa1bf0d1", "592766c6303207a20efc445587778322d7f73b161bd994f227adaa341ba212ab", "5f84523c076ad14ff5e6c037fe1c89a7f73a3e04cf0377cb4d017014976433f3", "0c507b7f74b3d2dd4d1322ec8a94794927305ab4cebbe89cc47fe5e81541e6e8", "b4c423ab23291d3945ac61346feeb9a0dc4184999ede5e7c43e1ffb975130ae6", "ca233c64c6e40eaa6c66ef97058cdc80e8d0157a443655baa1b2966e812807ca", "4474f8ea030b5127225b8894d626bb66c01cda098d47a2b0d3429b6700af9fd8", "326420cbb492172dec84b0f65c80942de6cedb5233c413dd824483989c000608", "5ac82e411044fb129bae5cfbeb3ba626acb2af31a8d17d175004b70862a741a7",]
+setuptools = [ "8fca9275c89964f13da985c3656cb00ba029d7f3916b37990927ffdf264e7926", "f7cddbb5f5c640311eb00eab6e849f7701fa70bf6a183fc8a2c33dd1d1672fb2",]
 simplegeneric = [ "dc972e06094b9af5b855b3df4a646395e43d1c9d0d39ed345b7393560d0b9173",]
 six = [ "832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb", "70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9",]
 sqlalchemy = [ "2d5f08f714a886a1382c18be501e614bce50d362384dc089474019ce0768151c",]

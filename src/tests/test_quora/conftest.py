@@ -8,11 +8,14 @@ from quora.tables import db
 def app():
     app = create_app('test_quora.settings')
     with app.app_context():
+        with db.engine.connect() as conn:
+            conn.execute('create EXTENSION if not EXISTS "uuid-ossp"')
         db.metadata.create_all(db.engine)
 
-    def drop_db_tables():
+    def drop_db_tables(response_or_exc):
         db.engine.dispose()
         db.metadata.drop_all(db.engine)
+        return response_or_exc
 
     app.teardown_appcontext(drop_db_tables)
 

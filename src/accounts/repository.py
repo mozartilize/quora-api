@@ -13,8 +13,9 @@ def all(columns=[]):
 
 
 def regist_account(data):
-    ins = insert(accounts).values(**data)
-    return repo(ins)
+    ins = insert(accounts).values(**data)\
+        .returning(accounts.c.id, accounts.c.email)
+    return repo(ins).fetchone()
 
 
 def activate_account(data):
