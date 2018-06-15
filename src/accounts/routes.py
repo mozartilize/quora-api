@@ -5,7 +5,7 @@ from accounts.resources import AccountListAPI, AccountAPI, AuthAPI, \
 routes = [
     (AccountListAPI, '/accounts'),
     (AccountActivationAPI, '/accounts/activation'),
-    (AccountActivationTokenAPI, '/accounts/activation/<uuid:id>'),
+    (AccountActivationTokenAPI, '/accounts/activation'),
     (AccountAPI, '/accounts/<uuid:id>'),
     (AuthAPI, '/auth'),
 ]

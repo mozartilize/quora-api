@@ -11,7 +11,7 @@ from accounts.authentication import auth, generate_auth_token, \
     generate_activation_token
 from accounts.tables import accounts
 from accounts.schemas import AccountSchema, RegistrationSchema, \
-    ActivationTokenSchema
+    ActivationTokenSchema, ClientMailContextSchema
 from accounts.repository import regist_account, activate_account
 from accounts import mailer
 
@@ -47,30 +47,48 @@ class AccountActivationAPI(Resource):
 
 
 class AccountActivationTokenAPI(Resource):
-    def post(self, id):
-        q = select([accounts.c.id,
-                    accounts.c.email,
-                    accounts.c.activated_at])\
-            .where(accounts.c.id == str(id))
-        acc = repo(q).fetchone()
+    def post(self):
+        payload = request.form or request.json
+        # logged in
+        if getattr(g, 'account_id', None):
+            q = select([accounts.c.id,
+                        accounts.c.email,
+                        accounts.c.activated_at])\
+                .where(accounts.c.id == str(g.account_id))
+            acc = repo(q).fetchone()
+        else:
+            try:
+                q = select([accounts.c.id,
+                        accounts.c.email,
+                        accounts.c.activated_at])\
+                    .where(accounts.c.email == payload['email'])
+                acc = repo(q).fetchone()
+            except KeyError:
+                return abort(400)
         if not acc:
-            return abort(404)
+            return abort(400)
         elif acc and acc.activated_at:
             return abort(400)
         else:
-            token = generate_activation_token(acc.id)
-            mailer.send_activation_token(acc.email, token)
-            return '', 202
+            try:
+                cl_mail_ctx_sch = ClientMailContextSchema()
+                mail_ctx = cl_mail_ctx_sch.load(payload)
+                _send_activation_mail(acc, mail_ctx)
+                return '', 202
+            except ValidationError as e:
+                return {'errors': e.messages}, 400
 
 
 class AccountListAPI(Resource):
     def post(self):
         rs = RegistrationSchema()
+        cl_mail_ctx_sch = ClientMailContextSchema()
         try:
-            data = rs.load(request.form or request.json)
-            acc = regist_account(data)
-            token = generate_activation_token(acc.id)
-            mailer.send_activation_token(acc.email, token)
+            payload = request.form or request.json
+            acc_data = rs.load(payload)
+            mail_ctx = cl_mail_ctx_sch.load(payload)
+            acc = regist_account(acc_data)
+            _send_activation_mail(acc, mail_ctx)
             return {'id': acc.id}, \
                 201, \
                 {'Location': url_for('.accountapi', id=acc.id)}
@@ -84,3 +102,13 @@ class AuthAPI(Resource):
     def get(self):
         token = generate_auth_token(g.account_id)
         return {'token': token.decode('ascii')}
+
+
+def _send_activation_mail(acc, mail_ctx):
+    token = generate_activation_token(acc.id)
+    mailer.send_activation_token(
+        acc.email,
+        mail_ctx['subject'],
+        mail_ctx['sender'],
+        mail_ctx['url'],
+        token)

@@ -2,7 +2,7 @@ from datetime import datetime
 import pytz
 import jwt
 from flask import current_app, g
-from marshmallow import fields, post_load, ValidationError, Schema
+from marshmallow import fields, post_load, ValidationError, Schema, validates
 from sqlalchemy import or_, select
 from sqlalchemy.exc import DataError, ProgrammingError
 
@@ -121,3 +121,15 @@ class ActivationTokenSchema(Schema):
                 'uuid': payload['account_id'],
                 'activated_at': datetime.now(tz=pytz.utc)
             }
+
+
+class ClientMailContextSchema(Schema):
+    subject = fields.Str(required=True, validate=not_blank)
+    sender = fields.List(fields.Str(validate=not_blank), required=True)
+    url = fields.Url(required=True)
+
+    @validates('subject')
+    def validate_subject(self, value):
+        for char in ['\r', '\n', '\r\n']:
+            if char in value:
+                raise ValidationError('Subject should not contain newline')
