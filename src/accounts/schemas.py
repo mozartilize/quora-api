@@ -2,7 +2,8 @@ from datetime import datetime
 import pytz
 import jwt
 from flask import current_app, g
-from marshmallow import fields, post_load, ValidationError, Schema, validates
+from marshmallow import fields, post_load, ValidationError, Schema, \
+    validates, validate
 from sqlalchemy import or_, select
 from sqlalchemy.exc import DataError, ProgrammingError
 
@@ -18,14 +19,19 @@ class AccountSchema(Schema):
 
 
 class RegistrationSchema(Schema):
-    email = fields.Email(required=True,
-                         validate=lambda value:
-                             unique(accounts, 'email', value))
-    username = fields.Str(required=True,
-                          max_length=accounts.c.username.type.length,
-                          validate=lambda value:
-                              unique(accounts, 'username', value))
-    password = fields.Str(required=True)
+    email = fields.Email(
+        required=True,
+        validate=[
+            not_blank,
+            lambda value: unique(accounts, 'email', value)
+        ])
+    username = fields.Str(
+        required=True, max_length=accounts.c.username.type.length,
+        validate=[
+            not_blank,
+            lambda value: unique(accounts, 'username', value),
+        ])
+    password = fields.Str(required=True, validate=not_blank)
 
     @post_load
     def make_object(self, data):
@@ -125,7 +131,7 @@ class ActivationTokenSchema(Schema):
 
 class ClientMailContextSchema(Schema):
     subject = fields.Str(required=True, validate=not_blank)
-    sender = fields.List(fields.Str(validate=not_blank), required=True)
+    sender = fields.Str(required=True, validate=not_blank)
     url = fields.Url(required=True)
 
     @validates('subject')

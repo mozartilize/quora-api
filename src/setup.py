@@ -1,6 +1,6 @@
 from setuptools import setup
 
-packages = ["libs.password", "utils",
+packages = ["utils",
             # modules
             "accounts", "questions",
             # app

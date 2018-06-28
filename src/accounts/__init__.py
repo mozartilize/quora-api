@@ -1,3 +1,3 @@
-from libs.password import PassLib
+from .libs.password import PassLib
 
 passlib_ext = PassLib()
