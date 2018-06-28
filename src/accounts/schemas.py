@@ -21,10 +21,8 @@ class AccountSchema(Schema):
 class RegistrationSchema(Schema):
     email = fields.Email(
         required=True,
-        validate=[
-            not_blank,
-            lambda value: unique(accounts, 'email', value)
-        ])
+        validate=lambda value: unique(accounts, 'email', value)
+    )
     username = fields.Str(
         required=True, max_length=accounts.c.username.type.length,
         validate=[
@@ -56,8 +54,8 @@ class LoginSchema(Schema):
             ))
         acc = repo(query).fetchone()
         if acc:
-            if not acc.activated_at:
-                raise ValidationError('Account not activated')
+            # if not acc.activated_at:
+            #     raise ValidationError('Account not activated')
             try:
                 if passlib_ext.crypt_ctx\
                         .verify(data['password'], acc['pw_hash']):
