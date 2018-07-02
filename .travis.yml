@@ -1,0 +1,25 @@
+
+sudo: required
+
+language: python
+python:
+  - "3.6"
+
+cache:
+  pip: true
+
+services:
+  - docker
+
+before_script:
+  - docker run -e POSTGRES_USER=quora -e POSTGRES_PASSWORD=quora -e POSTGRES_DB=quora_testing -p 5001:5432 -d postgres:9.6
+  - cd $TRAVIS_BUILD_DIR/src
+
+install:
+  - pip install tox-travis coveralls
+
+script:
+  - tox
+
+after_success:
+  - coveralls
