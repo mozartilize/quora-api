@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mozartilize/quora-api.svg?branch=master)](https://travis-ci.org/mozartilize/quora-api)
+
 # Requirements
 - Python 3.6
 - Poetry
