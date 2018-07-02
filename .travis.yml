@@ -16,10 +16,10 @@ before_script:
   - cd $TRAVIS_BUILD_DIR/src
 
 install:
-  - pip install tox-travis coveralls
+  - pip install tox-travis codecov
 
 script:
   - tox
 
 after_success:
-  - coveralls
+  - codecov
