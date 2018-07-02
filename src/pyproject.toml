@@ -4,6 +4,13 @@ version = "0.1.0"
 description = "Quora-liked app"
 authors = ["arshavindn <mozartilize@gmail.com>"]
 license = "MIT"
+packages = [
+  { include = "utils" },
+  { include = "accounts" },
+  { include = "questions" },
+  { include = "quora" }
+]
+include = ["migrations"]
 
 [tool.poetry.dependencies]
 python = "^3.6.2"
@@ -11,7 +18,7 @@ flask = "^1.0"
 sqlalchemy = "^1.2"
 psycopg2-binary = "^2.7"
 flask-restful = "^0.3.6"
-python-dotenv = "^0.8.2"
+python-dotenv = {version = "^0.8.2", optional = true}
 marshmallow = {version = "^3.0-beta.11", allows-prereleases = true}
 flask-migrate = "^2.1"
 pyjwt = "^1.6"
@@ -26,3 +33,9 @@ pytest = "^3.5"
 watchdog = "^0.8.3"
 flask-shell-ipython = "^0.3.0"
 pylint = "^1.9"
+faker = "^0.8.16"
+pytest-mock = "^1.10"
+
+[tool.poetry.extras]
+passlib = ["bcrypt"]
+dotenv = ["python-dotenv"]

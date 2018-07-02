@@ -12,14 +12,11 @@ def app():
             conn.execute('create EXTENSION if not EXISTS "uuid-ossp"')
         db.metadata.create_all(db.engine)
 
-    def drop_db_tables(response_or_exc):
+    yield app
+
+    with app.app_context():
         db.engine.dispose()
         db.metadata.drop_all(db.engine)
-        return response_or_exc
-
-    app.teardown_appcontext(drop_db_tables)
-
-    yield app
 
 
 @pytest.fixture

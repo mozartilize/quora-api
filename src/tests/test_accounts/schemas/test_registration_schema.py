@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import MagicMock
 from marshmallow import ValidationError
 import accounts.schemas
 from accounts.schemas import RegistrationSchema
@@ -10,8 +9,8 @@ def schema():
     return RegistrationSchema()
 
 
-def test_valid_data(app, schema):
-    accounts.schemas.unique = MagicMock(return_value=None)
+def test_valid_data(mocker, app, schema):
+    mocker.patch('accounts.schemas.unique', return_value=None)
     with app.app_context():
         data = schema.load({
             'email': 'test@example.com',
@@ -27,8 +26,8 @@ def test_valid_data(app, schema):
 @pytest.mark.parametrize(
     'override_data',
     ({'email': ''}, {'username': ''}, {'password': ''}))
-def test_invalid_blank_data(app, schema, override_data):
-    accounts.schemas.unique = MagicMock(return_value=None)
+def test_invalid_blank_data(mocker, app, schema, override_data):
+    mocker.patch('accounts.schemas.unique', return_value=None)
     raw_data = {
         'email': 'test@example.com',
         'username': 'test',
@@ -43,13 +42,13 @@ def test_invalid_blank_data(app, schema, override_data):
 
 
 @pytest.mark.parametrize('field', ('email', 'username'))
-def test_invalid_unique_data(app, schema, field):
+def test_invalid_unique_data(mocker, app, schema, field):
     def side_effect(table, _field, value):
         if _field == field:
             raise ValidationError(
                 '{} already exists'.format(_field.capitalize()), _field)
 
-    accounts.schemas.unique = MagicMock(side_effect=side_effect)
+    mocker.patch('accounts.schemas.unique', side_effect=side_effect)
     raw_data = {
         'email': 'test@example.com',
         'username': 'test',

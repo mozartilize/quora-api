@@ -34,4 +34,7 @@ class PassLib(object):
         if ctx is not None:
             if not hasattr(ctx, 'passlib'):
                 ctx.passlib = self
-            return LazyCryptContext(**current_app.config['PASSLIB_CONTEXT'])
+            if not hasattr(self, '_crypt_ctx'):
+                self._crypt_ctx = LazyCryptContext(
+                    **current_app.config['PASSLIB_CONTEXT'])
+            return self._crypt_ctx
