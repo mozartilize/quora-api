@@ -6,6 +6,8 @@ from marshmallow import fields, post_load, ValidationError, Schema, \
     validates, validate
 from sqlalchemy import or_, select
 from sqlalchemy.exc import DataError, ProgrammingError
+from email.utils import parseaddr
+from flask_mail import force_text
 
 from accounts import passlib_ext
 from accounts.tables import accounts
@@ -137,3 +139,8 @@ class ClientMailContextSchema(Schema):
         for char in ['\r', '\n', '\r\n']:
             if char in value:
                 raise ValidationError('Subject should not contain newline')
+
+    @validates('sender')
+    def validate_sender(self, value):
+        _, addr = parseaddr(force_text(value))
+        validate.Email()(addr)
