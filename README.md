@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mozartilize/quora-api.svg?branch=master)](https://travis-ci.org/mozartilize/quora-api)
+[![Build Status](https://travis-ci.org/mozartilize/quora-api.svg?branch=master)](https://travis-ci.org/mozartilize/quora-api) [![codecov](https://codecov.io/gh/mozartilize/quora-api/branch/master/graph/badge.svg)](https://codecov.io/gh/mozartilize/quora-api)
 
 # Requirements
 - Python 3.6
