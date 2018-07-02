@@ -10,7 +10,7 @@ packages = [
   { include = "questions" },
   { include = "quora" }
 ]
-include = ["migrations"]
+include = ["migrations/**/*"]
 
 [tool.poetry.dependencies]
 python = "^3.6.2"

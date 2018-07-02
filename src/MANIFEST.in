@@ -1,3 +1,0 @@
-graft migrations
-
-global-exclude *.py[co]
