@@ -1,0 +1,16 @@
+setup:
+  addons:
+  - plan: heroku-postgresql
+    as: DATABASE
+
+build:
+  docker:
+    web: Dockerfile
+
+release:
+  command:
+    - flask db upgrade
+
+run:
+  web:
+    image: web
