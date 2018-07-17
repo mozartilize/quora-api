@@ -3,6 +3,7 @@ from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from sqlalchemy import insert
 from utils.tables.repository import repo
+from utils.decorators import hashids_decode
 from questions.schemas import AddQuestionSchema, AddAnswerSchema
 from questions.tables import questions, answers
 
@@ -27,14 +28,17 @@ class QuestionListAPI(Resource):
 
 
 class QuestionAPI(Resource):
+    @hashids_decode('id')
     def get(self, id):
-        pass
+        return {'id': id}
 
 
 class AnswerListAPI(Resource):
+    @hashids_decode('question_id')
     def get(self, question_id):
         pass
 
+    @hashids_decode('question_id')
     def post(self, question_id):
         s = AddAnswerSchema()
         try:
@@ -51,5 +55,6 @@ class AnswerListAPI(Resource):
 
 
 class AnswerAPI(Resource):
-    def get(self, id):
-        pass
+    @hashids_decode('question_id', 'id')
+    def get(self, id, question_id=None):
+        return {'question_id': question_id, 'id': id}

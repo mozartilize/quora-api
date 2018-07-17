@@ -27,6 +27,7 @@ flask-sqlalchemy = "^2.3"
 flask-httpauth = "^3.2"
 bcrypt = {version = "^3.1", optional = true}
 Flask-Mail = "^0.9.1"
+hashids = "^1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.5"

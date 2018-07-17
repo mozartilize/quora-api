@@ -259,6 +259,15 @@ Flask = ">=0.10"
 SQLAlchemy = ">=0.8.0"
 
 [[package]]
+category = "main"
+description = "Python implementation of hashids (http://www.hashids.org).Compatible with python 2.6-3."
+name = "hashids"
+optional = false
+platform = "*"
+python-versions = "*"
+version = "1.2.0"
+
+[[package]]
 category = "dev"
 description = "IPython: Productive Interactive Computing"
 name = "ipython"
@@ -728,7 +737,7 @@ dotenv = ["python-dotenv"]
 passlib = ["bcrypt"]
 
 [metadata]
-content-hash = "5879f993d731e632a2c6f4c378d9b806ab2a952af9f4278b005637c99c04029d"
+content-hash = "7e7142c26a198ef66021384e29bb7ec4fbda42f331fcb9b31c48c67b54845434"
 platform = "*"
 python-versions = "^3.6.2"
 
@@ -755,6 +764,7 @@ flask-migrate = ["2697d2a9f9cd7de14a01a3de9f6e27d44ccffe1a2bf59bae2b2bb22cecb9d8
 flask-restful = ["5795519501347e108c436b693ff9a4d7b373a3ac9069627d64e4001c05dd3407", "e2f1b8063de3944b94c7f8be5cee4d2161db0267c54c5b757d875295061776fa"]
 flask-shell-ipython = ["9da2ca2eccfa6527d7a76ca5bc8d8cdf5485206ff917b9c50851acc35a867d37", "ac80a798f7b73b090c9a184f9c27b0d59481544f7fb8726cf4dd74c2d0aa2a15"]
 flask-sqlalchemy = ["3bc0fac969dd8c0ace01b32060f0c729565293302f0c4269beed154b46bec50b", "5971b9852b5888655f11db634e87725a9031e170f37c0ce7851cf83497f56e53"]
+hashids = ["6539b892a426e75747a9c0ad69409e9566f9c21b79310fc3424b5b6726f28da6"]
 ipython = ["a0c96853549b246991046f32d19db7140f5b1a644cc31f0dc1edc86713b7676f", "eca537aa61592aca2fef4adea12af8e42f5c335004dfa80c78caf80e8b525e5c"]
 ipython-genutils = ["72dd37233799e619666c9f639a9da83c34013a73e8bbc79a7a6348d93c61fab8", "eb2e116e75ecef9d4d228fdc66af54269afa26ab4463042e33785b887c628ba8"]
 isort = ["1153601da39a25b14ddc54955dbbacbb6b2d19135386699e2ad58517953b34af", "b9c40e9750f3d77e6e4d441d8b0266cf555e7cdabdcff33c4fd06366ca761ef8", "ec9ef8f4a9bc6f71eec99e1806bfa2de401650d996c59330782b89a5555c1497"]
@@ -797,4 +807,3 @@ watchdog = ["7e65882adb7746039b6f3876ee174952f8eaaa34491ba34333ddf1fe35de4162"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
 werkzeug = ["c3fd7a7d41976d9f44db327260e263132466836cef6f91512889ed60ad26557c", "d5da73735293558eb1651ee2fddc4d0dedcfa06538b8813a2e20011583c9e49b"]
 wrapt = ["d4d560d479f2c21e1b5443bbd15fe7ec4b37fe7e53d335d3b9b0a7b1226fe3c6"]
-

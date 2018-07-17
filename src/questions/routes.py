@@ -3,7 +3,7 @@ from questions.resources import QuestionListAPI, QuestionAPI, \
 
 routes = [
     (QuestionListAPI, '/questions'),
-    (QuestionAPI, '/questions/<int:id>'),
-    (AnswerListAPI, '/questions/<int:id>/answers'),
-    (AnswerAPI, '/questions/<int:question_id>/answers/<int:id>'),
+    (QuestionAPI, '/questions/<string:id>'),
+    (AnswerListAPI, '/questions/<string:id>/answers'),
+    (AnswerAPI, '/questions/<string:question_id>/answers/<string:id>', '/answers/<string:id>'),
 ]
