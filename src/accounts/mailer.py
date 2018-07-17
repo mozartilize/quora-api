@@ -10,4 +10,4 @@ def send_activation_token(email, subject, sender, url, token):
         html=render_template('accounts/activation_mail.html',
                              url=url, token=token.decode('ascii'))
     )
-    current_app.extensions['mailer'].send(msg)
+    current_app.extensions['mail'].send(msg)
