@@ -1,3 +1,2 @@
-release: cd src/ && poetry install --no-dev -E deploy
-release: cd src/ && poetry run flask db upgrade
+release: ./release_tasks.sh
 web: uwsgi uwsgi.ini
