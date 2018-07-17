@@ -18,16 +18,17 @@ flask = "^1.0"
 sqlalchemy = "^1.2"
 psycopg2-binary = "^2.7"
 flask-restful = "^0.3.6"
-python-dotenv = {version = "^0.8.2", optional = true}
+python-dotenv = {version = "^0.8.2", optional = true, extras = ["dotenv"]}
 marshmallow = {version = "^3.0-beta.11", allows-prereleases = true}
 flask-migrate = "^2.1"
 pyjwt = "^1.6"
 passlib = "^1.7"
 flask-sqlalchemy = "^2.3"
 flask-httpauth = "^3.2"
-bcrypt = {version = "^3.1", optional = true}
+bcrypt = {version = "^3.1", optional = true, extras = ["passlib"]}
 Flask-Mail = "^0.9.1"
 hashids = "^1.2"
+uwsgi = {version = "^2.0", optional = true, extras = ["deploy"]}
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.5"
@@ -40,3 +41,4 @@ pytest-mock = "^1.10"
 [tool.poetry.extras]
 passlib = ["bcrypt"]
 dotenv = ["python-dotenv"]
+deploy = ["uwsgi"]
