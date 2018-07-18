@@ -7,10 +7,5 @@ build:
   docker:
     web: Dockerfile
 
-release:
-  command:
-    - flask db upgrade
-
-run:
-  web:
-    image: web
+  config:
+    SOURCE_VERSION: 0.1.0

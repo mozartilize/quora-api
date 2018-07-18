@@ -13,4 +13,4 @@ RUN poetry install --no-dev -E deploy
 RUN useradd -m mark1
 USER mark1
 
-CMD ["uwsgi" "uwsgi.ini"]
+CMD ["uwsgi", "uwsgi.ini"]
