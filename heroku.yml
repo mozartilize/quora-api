@@ -6,6 +6,3 @@ setup:
 build:
   docker:
     web: Dockerfile
-
-  config:
-    SOURCE_VERSION: 0.1.0

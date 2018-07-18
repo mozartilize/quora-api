@@ -1,5 +1,7 @@
 FROM python:3.6
 
+ARG SOURCE_VERSION
+
 RUN pip install poetry
 
 RUN poetry config settings.virtualenvs.create false
