@@ -5,4 +5,8 @@ setup:
 
 build:
   docker:
-    web: Dockerfile
+    web: Dockerfile.web
+
+release:
+  command:
+    - flask db upgrade
