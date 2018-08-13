@@ -1,4 +1,4 @@
-from flask import request, url_for
+from flask import request, url_for, current_app
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from sqlalchemy import insert
@@ -17,12 +17,12 @@ class QuestionListAPI(Resource):
         try:
             data = s.load(request.form or request.json)
             question_id = repo(
-                insert(questions)\
-                .values(**data)\
-                .returning(questions.c.id))\
-            .fetchone().id
-            return {}, 201, \
-                {"Location": url_for('.questionapi', id=question_id)}
+                insert(questions).values(**data).returning(questions.c.id)
+            ).fetchone().id
+            return None, 201, \
+                {"Location": url_for('.questionapi',
+                                     id=current_app.extensions['hashids']
+                                                   .encode(question_id))}
         except ValidationError as e:
             return {"errors": e.messages}, 400
 
@@ -44,12 +44,12 @@ class AnswerListAPI(Resource):
         try:
             data = s.load(request.form or request.json)
             answer_id = repo(
-                insert(answers)\
-                    .values(**data)\
-                    .returning(answers.c.id)
-                ).fetchone().id
-            return {}, 201, \
-                {"Location": url_for('.answerapi', id=answer_id)}
+                insert(answers).values(**data).returning(answers.c.id)
+            ).fetchone().id
+            return None, 201, \
+                {"Location": url_for('.answerapi',
+                                     id=current_app.extensions['hashids']
+                                                   .encode(answer_id))}
         except ValidationError as e:
             return {"errors": e.messages}, 400
 
