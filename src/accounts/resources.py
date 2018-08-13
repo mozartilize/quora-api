@@ -39,7 +39,7 @@ class AccountActivationAPI(Resource):
         try:
             data = s.load(request.args)  # get token from query params
             acc = activate_account(data)
-            return {}, \
+            return None, \
                 200, \
                 {'Location': url_for('.accountapi', id=acc.id)}
         except ValidationError as e:
@@ -74,7 +74,7 @@ class AccountActivationTokenAPI(Resource):
                 cl_mail_ctx_sch = ClientMailContextSchema()
                 mail_ctx = cl_mail_ctx_sch.load(payload)
                 _send_activation_mail(acc, mail_ctx)
-                return '', 202
+                return None, 202
             except ValidationError as e:
                 return {'errors': e.messages}, 400
 
