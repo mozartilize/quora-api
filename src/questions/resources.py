@@ -4,33 +4,39 @@ from marshmallow import ValidationError
 from sqlalchemy import insert
 from utils.tables.repository import repo
 from utils.decorators import hashids_decode
+from utils.views.mixins import ResourceCreationMixin, SingleResourceDetailMixin
 from questions.schemas import AddQuestionSchema, AddAnswerSchema
 from questions.tables import questions, answers
 
 
-class QuestionListAPI(Resource):
+class QuestionListAPI(ResourceCreationMixin, Resource):
+    post_schema_class = AddQuestionSchema
+
     def get(self):
         pass
 
-    def post(self):
-        s = AddQuestionSchema()
-        try:
-            data = s.load(request.form or request.json)
-            question_id = repo(
-                insert(questions).values(**data).returning(questions.c.id)
-            ).fetchone().id
-            return None, 201, \
-                {"Location": url_for('.questionapi',
-                                     id=current_app.extensions['hashids']
-                                                   .encode(question_id))}
-        except ValidationError as e:
-            return {"errors": e.messages}, 400
+    def persist_record(self, data):
+        return repo(
+            insert(questions).values(**data).returning(questions.c.id)
+        ).fetchone()
+
+    # def post(self):
+    #     s = AddQuestionSchema()
+    #     try:
+    #         data = s.load(request.form or request.json)
+    #         question_id = repo(
+    #             insert(questions).values(**data).returning(questions.c.id)
+    #         ).fetchone().id
+    #         return None, 201, \
+    #             {"Location": url_for('.questionapi',
+    #                                  id=current_app.extensions['hashids']
+    #                                                .encode(question_id))}
+    #     except ValidationError as e:
+    #         return {"errors": e.messages}, 400
 
 
-class QuestionAPI(Resource):
-    @hashids_decode('id')
-    def get(self, id):
-        return {'id': id}
+class QuestionAPI(SingleResourceDetailMixin, Resource):
+    get_hashid_pks = ('id',)
 
 
 class AnswerListAPI(Resource):

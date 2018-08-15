@@ -7,7 +7,12 @@ def hashids_decode(*pks):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            for varname in pks:
+            _pks = pks
+            if not pks:
+                cls = dict(zip(f.__code__.co_varnames, args)).get('self')
+                if cls:
+                    _pks = getattr(cls, '{}_hashid_pks'.format(f.__name__))
+            for varname in _pks:
                 try:
                     if kwargs[varname] is None:
                         continue

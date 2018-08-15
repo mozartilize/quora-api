@@ -3,8 +3,8 @@ from flask import Flask, g
 from flask_migrate import Migrate
 from flask_mail import Mail
 
-from quora.tables import db
 from hashids import Hashids
+from quora.tables import db
 from accounts import passlib_ext
 
 
