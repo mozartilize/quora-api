@@ -7,7 +7,7 @@ from sqlalchemy import select
 from marshmallow.exceptions import ValidationError
 
 from utils.tables.repository import repo
-from accounts.authentication import auth, generate_auth_token, \
+from accounts.authentication import auth, basic_auth, generate_auth_token, \
     generate_activation_token
 from accounts.tables import accounts
 from accounts.schemas import AccountSchema, RegistrationSchema, \
@@ -33,7 +33,7 @@ class AccountAPI(Resource):
         pass
 
 
-class AccountActivationAPI(Resource):
+class AccountActivationTokenAPI(Resource):
     def get(self):
         s = ActivationTokenSchema()
         try:
@@ -45,8 +45,6 @@ class AccountActivationAPI(Resource):
         except ValidationError as e:
             return {'message': '', 'errors': e.messages}, 400
 
-
-class AccountActivationTokenAPI(Resource):
     def post(self):
         payload = request.form or request.json
         # logged in
@@ -97,7 +95,7 @@ class AccountListAPI(Resource):
 
 
 class AuthAPI(Resource):
-    decorators = [auth.login_required]
+    decorators = [basic_auth.login_required]
 
     def get(self):
         token = generate_auth_token(g.account_id)
