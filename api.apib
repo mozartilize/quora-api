@@ -1,0 +1,179 @@
+FORMAT: 1A
+
+# Group Accounts
+
+## Accounts Collection [/accounts]
+
+### Create Account [POST]
++ Request (applications/json, multipart/form-data)
+    + Attributes
+
+        + email (string)
+        + username (string)
+        + password (string)
+
++ Response 201 (applications/json)
+    + Headers
+
+            Location: /accounts/<uuid:id>
+
+    + Body
+
+            {
+                "id": "a65efed8-6ced-4666-b1e8-f2247b8abbfc"
+            }
+
+
+## Account Details [/accounts/<uuid:id>]
+
+### Get account [GET]
++ Request
+    + Headers
+
+            Authorization: <auth_token>
+
++ Response 200 (applications/json)
+    + Body
+
+            {
+                "id": "a65efed8-6ced-4666-b1e8-f2247b8abbfc",
+                "email": "user1@example.com",
+                "username": "user1"
+            }
+
+### Update account [PUT]
++ Request (applications/json, multipart/form-data)
+    + Headers
+
+            Authorization: <auth_token>
+
+    + Attributes
+
+        + email (string, optional)
+        + username (string, optional)
+
++ Response 200 (applications/json)
+    + Headers
+
+            Location: /accounts/<uuid:id>
+
+    + Body
+
+            null
+
+
+## Account password [/accounts/<uuid:id>/password]
+
+### Change password [PUT]
++ Request
+    + Headers
+
+            Authorization: <auth_token>
+
+    + Attributes
+
+        + current_password (string)
+        + confirmed_password (string)
+
++ Response 200 (applications/json)
+    + Body
+
+            null
+
++ Response 400 (applications/json)
+    + Body
+
+            {
+                "message": null,
+                "errors": {
+                    "current_password": "Current password is not correct"
+                }
+            }
+
+            {
+                "message": null,
+                "errors": {
+                    "confirmed_password": "Password does not match"
+                }
+            }
+
+
+## Password Reset [/accounts/password]
+### Find account via email [POST]
++ Request (applications/json, multipart/form-data)
+    + Attributes
+
+        + email (string)
+
++ Response 202
+
++ Response 404 (applications/json)
+    + Body
+
+            {
+                "message": "Account not found",
+                "errors": null
+            }
+
+### Reset password [GET]
++ Request
+    + Parameters
+        + token (string)
+
++ Response 200 (application/json)
+
+
+## Account Activation Token [/accounts/activation]
+Check if a user uses valid email or not.
+If user is not currently logined, email is required.
+
+### Get activation token [POST]
++ Request (applications/json, multipart/form-data)
+    + Headers
+
+            Authorization: <auth_token> (optional)
+
+    + Attributes
+
+        + email (string, optional)
+
++ Response 202
+
+### Activate account [GET]
++ Request
+    + Parameters
+        + token (string)
+
++ Response 200 (applications/json)
+    + Headers
+
+            Location: /accounts/<uuid:id>
+
+    + Body
+
+            null
+
+
+# Group Authentication
+## Authenticate [/auth]
+### Login [POST]
++ Request (applications/json, multipart/form-data)
+    + Attributes
+
+        + email_or_username (string)
+        + password (string)
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "token": "some kind of jwt"
+            }
+
++ Response 400 (applications/json)
+    + Body
+
+            {
+                "message": "Authentication failed. Please try again",
+                "errors": null
+            }
