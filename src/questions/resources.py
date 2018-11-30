@@ -1,8 +1,8 @@
 from flask import request, url_for, current_app
-from flask_restful import Resource, abort
+from flask_restful import Resource
 from marshmallow import ValidationError
 from sqlalchemy import insert
-from utils.tables.repository import repo
+from db.repository import repo
 from utils.decorators import hashids_decode
 from utils.views.mixins import ResourceCreationMixin, SingleResourceDetailMixin
 from questions.schemas import AddQuestionSchema, AddAnswerSchema

@@ -1,7 +1,7 @@
 from marshmallow import validate, ValidationError
 from sqlalchemy import text, select
 
-from utils.tables.repository import repo
+from db.repository import repo
 
 not_blank = validate.Length(min=1, error='Field cannot be blank')
 

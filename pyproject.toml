@@ -5,12 +5,11 @@ description = "Quora-liked app"
 authors = ["arshavindn <mozartilize@gmail.com>"]
 license = "MIT"
 packages = [
-  { include = "utils" },
-  { include = "accounts" },
-  { include = "questions" },
-  { include = "quora" }
+  { include = "utils", from="src" },
+  { include = "accounts", from="src" },
+  { include = "questions", from="src" },
+  { include = "quora", from="src" }
 ]
-include = ["migrations/**/*"]
 
 [tool.poetry.dependencies]
 python = "^3.6.2"
@@ -34,9 +33,10 @@ uwsgi = {version = "^2.0", optional = true, extras = ["deploy"]}
 pytest = "^3.5"
 watchdog = "^0.8.3"
 flask-shell-ipython = "^0.3.0"
-pylint = "^1.9"
 faker = "^0.8.16"
 pytest-mock = "^1.10"
+flake8 = "^3.6"
+ipython = "^7.2"
 
 [tool.poetry.extras]
 passlib = ["bcrypt"]

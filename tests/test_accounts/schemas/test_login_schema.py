@@ -1,8 +1,7 @@
 import pytest
 from marshmallow import ValidationError
-import accounts.schemas
 from accounts.schemas import LoginSchema
-from helpers import RowProxyMock
+from ..helpers import RowProxyMock
 
 
 @pytest.fixture
@@ -23,7 +22,6 @@ def test_login_successfully(mocker, app, schema):
     with app.app_context():
         mocker.patch('accounts.schemas.passlib_ext.crypt_ctx.verify',
                      return_value=True)
-        # import pdb; pdb.set_trace()
         data = schema.load(login_data)
     assert data['id'] == 1
     assert len(data) == 1

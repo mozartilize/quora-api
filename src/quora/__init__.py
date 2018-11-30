@@ -1,21 +1,19 @@
 import os.path
-from flask import Flask, g
+from flask import Flask
 from flask_migrate import Migrate
 from flask_mail import Mail
 
 from hashids import Hashids
-from quora.tables import db
+from db import db
 from accounts import passlib_ext
 
 
-def create_app(setting_object):
-    root_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+def create_app(setting_object, root_path=None):
     app = Flask(__name__, root_path=root_path)
     app.config.from_object(setting_object)
 
     db.init_app(app)
-
-    Migrate(app, db, directory=os.path.join(root_path, 'migrations'))
+    Migrate(app, db, directory=os.path.join(root_path, '../migrations'))
     Mail(app)
     app.extensions['hashids'] = Hashids(
         salt=app.config['SECRET_KEY'], min_length=10)
@@ -28,6 +26,9 @@ def create_app(setting_object):
     # blueprint registers
     app.register_blueprint(api_bp)
 
-    app.jinja_loader.searchpath.append('accounts/templates')
+    import accounts
+    app.jinja_loader.searchpath.append(
+        os.path.join(os.path.dirname(accounts.__file__), 'templates')
+    )
 
     return app

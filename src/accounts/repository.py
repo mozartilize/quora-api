@@ -1,5 +1,5 @@
 from sqlalchemy import select, insert, update
-from utils.tables.repository import repo
+from db.repository import repo
 from accounts.tables import accounts
 
 

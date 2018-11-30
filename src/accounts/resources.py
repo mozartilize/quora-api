@@ -1,12 +1,9 @@
-from datetime import datetime
-import jwt
-import pytz
-from flask import request, url_for, current_app, g
+from flask import request, url_for, g
 from flask_restful import Resource, abort
 from sqlalchemy import select
 from marshmallow.exceptions import ValidationError
 
-from utils.tables.repository import repo
+from db.repository import repo
 from accounts.authentication import auth, basic_auth, generate_auth_token, \
     generate_activation_token
 from accounts.tables import accounts

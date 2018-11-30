@@ -1,6 +1,6 @@
 import pytest
 from marshmallow import ValidationError
-import accounts.schemas
+import accounts.schemas  # noqa
 from accounts.schemas import RegistrationSchema
 
 

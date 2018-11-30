@@ -1,9 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Table, Column, Integer, DateTime, text, TIMESTAMP, \
-    MetaData
-
-
-meta = MetaData()
+from sqlalchemy import Column, Integer, text, TIMESTAMP
 
 int_id = lambda: Column('id', Integer, primary_key=True)
 

@@ -1,9 +1,9 @@
 from datetime import datetime
 import pytz
 import jwt
-from flask import current_app, g
+from flask import current_app
 from marshmallow import fields, post_load, ValidationError, Schema, \
-    validates, validate
+    validates, validate, EXCLUDE
 from sqlalchemy import or_, select
 from sqlalchemy.exc import DataError, ProgrammingError
 from email.utils import parseaddr
@@ -11,13 +11,14 @@ from flask_mail import force_text
 
 from accounts import passlib_ext
 from accounts.tables import accounts
-from utils.tables.repository import repo
+from db.repository import repo
 from utils.schemas.validations import not_blank, unique
 
 
 class AccountSchema(Schema):
     class Meta:
         fields = ('id', 'email', 'username',)
+        unknown = EXCLUDE
 
 
 class RegistrationSchema(Schema):
@@ -33,6 +34,9 @@ class RegistrationSchema(Schema):
         ])
     password = fields.Str(required=True, validate=not_blank)
 
+    class Meta:
+        unknown = EXCLUDE
+
     @post_load
     def make_object(self, data):
         pw_hash = passlib_ext.crypt_ctx.hash(data['password']).encode('utf-8')
@@ -44,6 +48,9 @@ class RegistrationSchema(Schema):
 class LoginSchema(Schema):
     username_or_email = fields.Str(required=True, validate=not_blank)
     password = fields.Str(required=True, validate=not_blank)
+
+    class Meta:
+        unknown = EXCLUDE
 
     @post_load
     def make_object(self, data):
@@ -117,6 +124,9 @@ def verify_auth_token(token):
 class ActivationTokenSchema(Schema):
     token = fields.Str(required=True)
 
+    class Meta:
+        unknown = EXCLUDE
+
     @post_load
     def make_object(self, data):
         ok, message, payload = verify_activation_token(data['token'])
@@ -134,11 +144,13 @@ class ClientMailContextSchema(Schema):
     sender = fields.Str(required=True, validate=not_blank)
     url = fields.Url(required=True)
 
+    class Meta:
+        unknown = EXCLUDE
+
     @validates('subject')
     def validate_subject(self, value):
-        for char in ['\r', '\n', '\r\n']:
-            if char in value:
-                raise ValidationError('Subject should not contain newline')
+        if any(char in value for char in ['\r', '\n', '\r\n']):
+            raise ValidationError('Subject should not contain newline')
 
     @validates('sender')
     def validate_sender(self, value):
