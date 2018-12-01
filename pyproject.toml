@@ -37,6 +37,7 @@ faker = "^0.8.16"
 pytest-mock = "^1.10"
 flake8 = "^3.6"
 ipython = "^7.2"
+coverage = "^4.5"
 
 [tool.poetry.extras]
 passlib = ["bcrypt"]
