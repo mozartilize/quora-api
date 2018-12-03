@@ -28,18 +28,23 @@ bcrypt = {version = "^3.1", optional = true, extras = ["passlib"]}
 Flask-Mail = "^0.9.1"
 hashids = "^1.2"
 uwsgi = {version = "^2.0", optional = true, extras = ["deploy"]}
+coverage = {version = "^4.5", optional = true, extras = ["test"]}
+pytest = {version = "^4.0", optional = true, extras = ["test"]}
+faker = {version = "^1.0", optional = true, extras = ["test"]}
+pytest-mock = {version = "^1.10", optional = true, extras = ["test"]}
 
 [tool.poetry.dev-dependencies]
-pytest = "^3.5"
 watchdog = "^0.8.3"
 flask-shell-ipython = "^0.3.0"
-faker = "^0.8.16"
-pytest-mock = "^1.10"
 flake8 = "^3.6"
 ipython = "^7.2"
+pytest-mock = "^1.10"
 coverage = "^4.5"
+pytest = "^4.0"
+faker = "^1.0"
 
 [tool.poetry.extras]
 passlib = ["bcrypt"]
 dotenv = ["python-dotenv"]
 deploy = ["uwsgi"]
+test = ["pytest", "pytest-mock", "faker", "coverage"]
