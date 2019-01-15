@@ -624,11 +624,15 @@ version = "0.1.7"
 [[package]]
 category = "main"
 description = "The comprehensive WSGI web application library."
-name = "werkzeug"
+name = "Werkzeug"
 optional = false
 python-versions = "*"
-version = "0.14.1"
+version = "0.15.dev0"
 
+[package.source]
+reference = "6aaacc6117ce8a03045e2f8aa924430f27ff5ea6"
+type = "git"
+url = "https://github.com/pallets/werkzeug.git"
 [extras]
 deploy = ["uwsgi"]
 dotenv = ["python-dotenv"]
@@ -636,10 +640,11 @@ passlib = ["bcrypt"]
 test = ["pytest", "pytest-mock", "faker", "coverage"]
 
 [metadata]
-content-hash = "04debc58e55c88b3b69474a2285981e0ae8cfbe9a93b03b3be4a8f687c91317c"
+content-hash = "97b33ef902f7556911a9f2838b0c9595d9c9aa0dc8950164706314877a36d3e5"
 python-versions = "^3.6.2"
 
 [metadata.hashes]
+Werkzeug = []
 alembic = ["e9ffdece0eece55f4108b14b6b0f29ffc730d58e28446a434fe41a1cc5c5f266"]
 aniso8601 = ["547e7bc88c19742e519fb4ca39f4b8113fdfb8fca322e325f16a8bfc6cfc553c", "e7560de91bf00baa712b2550a2fdebf0188c5fce2fcd1162fbac75c19bb29c95"]
 appnope = ["5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0", "8b995ffe925347a2138d7ac0fe77155e4311a0ea6d6da4f5128fe4b3cbe5ed71"]
@@ -703,4 +708,3 @@ traitlets = ["9c4bd2d267b7153df9152698efb1050a5d84982d3384a37b2c1f7723ba3e7835",
 uwsgi = ["d2318235c74665a60021a4fc7770e9c2756f9fc07de7b8c22805efe85b5ab277"]
 watchdog = ["7e65882adb7746039b6f3876ee174952f8eaaa34491ba34333ddf1fe35de4162"]
 wcwidth = ["3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e", "f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"]
-werkzeug = ["c3fd7a7d41976d9f44db327260e263132466836cef6f91512889ed60ad26557c", "d5da73735293558eb1651ee2fddc4d0dedcfa06538b8813a2e20011583c9e49b"]
