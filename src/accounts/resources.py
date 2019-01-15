@@ -14,7 +14,7 @@ from accounts import mailer
 
 
 class AccountAPI(Resource):
-    decorators = [auth.login_required]
+    method_decorators = [auth.login_required]
 
     def get(self, id):
         s = AccountSchema()
@@ -53,10 +53,11 @@ class AccountActivationTokenAPI(Resource):
             acc = repo(q).fetchone()
         else:
             try:
-                q = select([accounts.c.id,
-                        accounts.c.email,
-                        accounts.c.activated_at])\
-                    .where(accounts.c.email == payload['email'])
+                q = select([
+                    accounts.c.id,
+                    accounts.c.email,
+                    accounts.c.activated_at
+                ]).where(accounts.c.email == payload['email'])
                 acc = repo(q).fetchone()
             except KeyError:
                 return abort(400)
@@ -92,11 +93,17 @@ class AccountListAPI(Resource):
 
 
 class AuthAPI(Resource):
-    decorators = [basic_auth.login_required]
+    method_decorators = {
+        "get": [auth.login_required],
+        "post": [basic_auth.login_required],
+    }
 
     def get(self):
         token = generate_auth_token(g.account_id)
         return {'token': token.decode('ascii')}
+
+    def post(self):
+        return self.get()
 
 
 def _send_activation_mail(acc, mail_ctx):
