@@ -7,13 +7,15 @@ class ResourceCreationMixin:
     def get_post_schema_class(self):
         return self.post_schema_class
 
-    def get_schema_args(self):
+    def post_schema_args(self, *args, **kwargs):
         return {}
 
-    def get_schema(self):
-        return self.get_schema_class()(**self.get_schema_args())
+    def get_schema(self, *args, **kwargs):
+        return self.get_post_schema_class()(
+            **self.post_schema_args(*args, **kwargs)
+        )
 
-    def get_created_resource_url(self, id):
+    def get_created_resource_url(self, instance, data=None, *args, **kwargs):
         raise NotImplementedError
 
     def persist_record(self, data):
@@ -21,14 +23,18 @@ class ResourceCreationMixin:
 
     @hashids_decode()
     def post(self, *args, **kwargs):
-        schema = self.get_schema()
+        schema = self.get_schema(*args, **kwargs)
         try:
             payload = request.form or request.json
             data = schema.load(payload)
             instance = self.persist_record(data)
             return {'id': instance.id}, \
                 201, \
-                {'Location': self.get_created_resource_url(instance.id)}
+                {
+                    'Location': self.get_created_resource_url(
+                        instance, data, *args, **kwargs
+                    )
+                }
         except ValidationError as e:
             return {'message': '', 'errors': e.messages}, 400
 

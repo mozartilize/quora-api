@@ -1,6 +1,5 @@
-from flask import request, url_for, current_app
+from flask import url_for, current_app
 from flask_restful import Resource
-from marshmallow import ValidationError
 from sqlalchemy import insert
 from db.repository import repo
 from utils.decorators import hashids_decode
@@ -20,44 +19,42 @@ class QuestionListAPI(ResourceCreationMixin, Resource):
             insert(questions).values(**data).returning(questions.c.id)
         ).fetchone()
 
-    # def post(self):
-    #     s = AddQuestionSchema()
-    #     try:
-    #         data = s.load(request.form or request.json)
-    #         question_id = repo(
-    #             insert(questions).values(**data).returning(questions.c.id)
-    #         ).fetchone().id
-    #         return None, 201, \
-    #             {"Location": url_for('.questionapi',
-    #                                  id=current_app.extensions['hashids']
-    #                                                .encode(question_id))}
-    #     except ValidationError as e:
-    #         return {"errors": e.messages}, 400
+    def get_created_resource_url(self, instance, data, *args, **kwargs):
+        hasher = current_app.extensions['hashids']
+        return url_for(
+            '.questionapi',
+            id=hasher.encode(instance.id, 'questions')
+        )
 
 
 class QuestionAPI(SingleResourceDetailMixin, Resource):
     get_hashid_pks = ('id',)
 
 
-class AnswerListAPI(Resource):
+class AnswerListAPI(ResourceCreationMixin, Resource):
+    post_hashid_pks = ('question_id',)
+
+    post_schema_class = AddAnswerSchema
+
+    def post_schema_args(self, *args, **kwargs):
+        return {"context": {"question_id": kwargs['question_id']}}
+
+    def get_created_resource_url(self, instance, data, *args, **kwargs):
+        hasher = current_app.extensions['hashids']
+        return url_for(
+            '.answerapi',
+            id=hasher.encode(instance.id, 'answers'),
+            question_id=hasher.encode(data['question_id'], 'questions')
+        )
+
+    def persist_record(self, data):
+        return repo(
+            insert(answers).values(**data).returning(answers.c.id)
+        ).fetchone()
+
     @hashids_decode('question_id')
     def get(self, question_id):
         pass
-
-    @hashids_decode('question_id')
-    def post(self, question_id):
-        s = AddAnswerSchema()
-        try:
-            data = s.load(request.form or request.json)
-            answer_id = repo(
-                insert(answers).values(**data).returning(answers.c.id)
-            ).fetchone().id
-            return None, 201, \
-                {"Location": url_for('.answerapi',
-                                     id=current_app.extensions['hashids']
-                                                   .encode(answer_id))}
-        except ValidationError as e:
-            return {"errors": e.messages}, 400
 
 
 class AnswerAPI(Resource):

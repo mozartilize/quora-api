@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, EXCLUDE
+from marshmallow import Schema, fields, EXCLUDE, post_load
 
 
 class AddQuestionSchema(Schema):
@@ -16,3 +16,8 @@ class AddAnswerSchema(Schema):
 
     class Meta:
         unknown = EXCLUDE
+
+    @post_load
+    def post_load(self, data):
+        data['question_id'] = self.context['question_id']
+        return data
