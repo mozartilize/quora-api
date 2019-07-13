@@ -43,7 +43,7 @@ pytest-mock = "^1.10"
 coverage = "^4.5"
 pytest = "^4.0"
 faker = "^1.0"
-
+black = {version = "^18.3-alpha.0", allows-prereleases = true}
 [tool.poetry.extras]
 passlib = ["bcrypt"]
 dotenv = ["python-dotenv"]

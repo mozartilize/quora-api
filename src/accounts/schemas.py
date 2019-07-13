@@ -37,7 +37,7 @@ class RegistrationSchema(Schema):
         unknown = EXCLUDE
 
     @post_load
-    def make_object(self, data):
+    def make_object(self, data, **kwargs):
         pw_hash = passlib_ext.crypt_ctx.hash(data['password']).encode('utf-8')
         del data['password']
         data['pw_hash'] = pw_hash
@@ -85,7 +85,7 @@ class ActivationTokenSchema(Schema):
         unknown = EXCLUDE
 
     @post_load
-    def make_object(self, data):
+    def make_object(self, data, kwargs):
         ok, message, payload = verify_activation_token(data['token'])
         if not ok:
             raise ValidationError(message, 'token')

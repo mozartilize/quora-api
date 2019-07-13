@@ -36,7 +36,7 @@ class AccountActivationTokenAPI(Resource):
             acc = activate_account(data)
             return {}, \
                 200, \
-                {'Location': url_for('.accountapi', id=acc.id)}
+                {'Location': url_for('.accountapi', uid=acc.id)}
         except ValidationError as e:
             return {
                 'msg': 'Acount activation failed',
@@ -90,7 +90,7 @@ class AccountListAPI(Resource):
             _send_activation_mail(acc, mail_ctx)
             return {'id': acc.id}, \
                 201, \
-                {'Location': url_for('.accountapi', id=acc.id)}
+                {'Location': url_for('.accountapi', uid=acc.id)}
         except ValidationError as e:
             return {'msg': 'Create account failed', 'errors': e.messages}, 400
 
