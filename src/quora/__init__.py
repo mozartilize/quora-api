@@ -3,9 +3,10 @@ from enum import IntEnum
 from flask import Flask
 from flask_migrate import Migrate
 from flask_mail import Mail
-
+from flask_cors import CORS
 from db import db
 from accounts import passlib_ext
+from auth import jwt
 from quora.extensions import HashId
 
 
@@ -22,6 +23,12 @@ def create_app(setting_object, root_path=None):
     db.init_app(app)
     Migrate(app, db, directory=os.path.join(root_path, '../migrations'))
     Mail(app)
+
+    CORS(app)
+
+    app.config["JWT_BLACKLIST_ENABLED"] = True
+    app.config["JWT_BLACKLIST_TOKEN_CHECKS"] = "refresh"
+    jwt.init_app(app)
 
     HashId(app, ResourceId)
 

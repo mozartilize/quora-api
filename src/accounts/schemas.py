@@ -4,7 +4,7 @@ import jwt
 from flask import current_app
 from marshmallow import fields, post_load, ValidationError, Schema, \
     validates, validate, EXCLUDE
-from sqlalchemy import or_, select
+from sqlalchemy import select
 from sqlalchemy.exc import DataError, ProgrammingError
 from email.utils import parseaddr
 from flask_mail import force_text
@@ -23,7 +23,6 @@ class AccountSchema(Schema):
 
 class RegistrationSchema(Schema):
     email = fields.Email(
-        required=True,
         validate=lambda value: unique(accounts, 'email', value)
     )
     username = fields.Str(
@@ -43,37 +42,6 @@ class RegistrationSchema(Schema):
         del data['password']
         data['pw_hash'] = pw_hash
         return data
-
-
-class LoginSchema(Schema):
-    username_or_email = fields.Str(required=True, validate=not_blank)
-    password = fields.Str(required=True, validate=not_blank)
-
-    class Meta:
-        unknown = EXCLUDE
-
-    @post_load
-    def make_object(self, data):
-        query = select([accounts.c.id,
-                        accounts.c.activated_at,
-                        accounts.c.pw_hash])\
-            .where(or_(
-                accounts.c.username == data['username_or_email'],
-                accounts.c.email == data['username_or_email']
-            ))
-        acc = repo(query).fetchone()
-        if acc:
-            # if not acc.activated_at:
-            #     raise ValidationError('Account not activated')
-            try:
-                if passlib_ext.crypt_ctx\
-                        .verify(data['password'], acc['pw_hash']):
-                    return {'id': acc['id']}
-                raise ValidationError('Password is incorrect', 'password')
-            except (TypeError, ValueError):
-                raise ValidationError('Password is incorrect', 'password')
-        else:
-            raise ValidationError('Not found', 'username_or_email')
 
 
 def verify_token(token, callback):
@@ -107,17 +75,6 @@ def verify_activation_token(token):
                 return True, '', payload
         return False, 'Invalid token', payload
 
-    return verify_token(token, self_verify)
-
-
-def verify_auth_token(token):
-    def self_verify(payload):
-        if payload.get('sub') == 'auth':
-            query = select([accounts.c.id])\
-                .where(accounts.c.id == payload['account_id'])
-            if repo(query).fetchone():
-                return True, '', payload['account_id']
-        return False, 'Invalid token', payload
     return verify_token(token, self_verify)
 
 

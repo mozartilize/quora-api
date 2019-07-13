@@ -2,10 +2,10 @@ from flask import request, url_for, g
 from flask_restful import Resource, abort
 from sqlalchemy import select
 from marshmallow.exceptions import ValidationError
+from flask_jwt_extended import get_jwt_identity
 
 from db.repository import repo
-from accounts.authentication import auth, basic_auth, generate_auth_token, \
-    generate_activation_token
+from accounts.authentication import generate_activation_token
 from accounts.tables import accounts
 from accounts.schemas import AccountSchema, RegistrationSchema, \
     ActivationTokenSchema, ClientMailContextSchema
@@ -14,12 +14,10 @@ from accounts import mailer
 
 
 class AccountAPI(Resource):
-    method_decorators = [auth.login_required]
-
-    def get(self, id):
+    def get(self, uid=None):
         s = AccountSchema()
         q = select([accounts.c[field] for field in s.fields.keys()])\
-            .where(accounts.c.id == str(id))
+            .where(accounts.c.id == (str(uid) if uid else g.account_id))
         acc = repo(q).fetchone()
         if not acc:
             return abort(404)
@@ -36,20 +34,25 @@ class AccountActivationTokenAPI(Resource):
         try:
             data = s.load(request.args)  # get token from query params
             acc = activate_account(data)
-            return None, \
+            return {}, \
                 200, \
                 {'Location': url_for('.accountapi', id=acc.id)}
         except ValidationError as e:
-            return {'message': '', 'errors': e.messages}, 400
+            return {
+                'msg': 'Acount activation failed',
+                'errors': e.messages
+            }, 400
 
+    # resend account activation
     def post(self):
         payload = request.form or request.json
         # logged in
-        if getattr(g, 'account_id', None):
+        current_user = get_jwt_identity()
+        if current_user:
             q = select([accounts.c.id,
                         accounts.c.email,
                         accounts.c.activated_at])\
-                .where(accounts.c.id == str(g.account_id))
+                .where(accounts.c.id == current_user)
             acc = repo(q).fetchone()
         else:
             try:
@@ -70,7 +73,7 @@ class AccountActivationTokenAPI(Resource):
                 cl_mail_ctx_sch = ClientMailContextSchema()
                 mail_ctx = cl_mail_ctx_sch.load(payload)
                 _send_activation_mail(acc, mail_ctx)
-                return None, 202
+                return {}, 202
             except ValidationError as e:
                 return {'errors': e.messages}, 400
 
@@ -89,21 +92,7 @@ class AccountListAPI(Resource):
                 201, \
                 {'Location': url_for('.accountapi', id=acc.id)}
         except ValidationError as e:
-            return {'message': '', 'errors': e.messages}, 400
-
-
-class AuthAPI(Resource):
-    method_decorators = {
-        "get": [auth.login_required],
-        "post": [basic_auth.login_required],
-    }
-
-    def get(self):
-        token = generate_auth_token(g.account_id)
-        return {'token': token.decode('ascii')}
-
-    def post(self):
-        return self.get()
+            return {'msg': 'Create account failed', 'errors': e.messages}, 400
 
 
 def _send_activation_mail(acc, mail_ctx):
@@ -113,4 +102,5 @@ def _send_activation_mail(acc, mail_ctx):
         mail_ctx['subject'],
         mail_ctx['sender'],
         mail_ctx['url'],
-        token)
+        token
+    )
