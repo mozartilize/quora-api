@@ -9,6 +9,5 @@ timestamps = lambda: (
            default=datetime.utcnow(),
            server_default=text('statement_timestamp()')),
     Column('updated_at', TIMESTAMP,
-           onupdate=datetime.utcnow(),
-           server_onupdate=text('statement_timestamp()')),
+           onupdate=datetime.utcnow()),
 )
