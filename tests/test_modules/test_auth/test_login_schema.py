@@ -8,6 +8,8 @@ from ..helpers import RowProxyMock
 def schema():
     return LoginSchema()
 
+error = {'_schema': 'Authentication failed'}
+
 
 def test_login_successfully(mocker, app, schema):
     result = mocker.Mock()
@@ -27,7 +29,8 @@ def test_login_successfully(mocker, app, schema):
     assert len(data) == 1
 
 
-def test_login_wrong_password(mocker, app, schema):
+@pytest.mark.parametrize('error', [error])
+def test_login_wrong_password(mocker, app, schema, error):
     result = mocker.Mock()
     result.fetchone.return_value = \
         RowProxyMock(id=1, activated_at=True, pw_hash='yay')
@@ -43,7 +46,7 @@ def test_login_wrong_password(mocker, app, schema):
                      return_value=False)
         with pytest.raises(ValidationError) as excinfo:
             schema.load(login_data)
-        assert 'password' in excinfo.value.messages
+        assert excinfo.value.messages == error
 
 
 def test_login_passed_even_not_activate(mocker, app, schema):
@@ -65,7 +68,8 @@ def test_login_passed_even_not_activate(mocker, app, schema):
     assert len(data) == 1
 
 
-def test_login_account_not_found(mocker, app, schema):
+@pytest.mark.parametrize('error', [error])
+def test_login_account_not_found(mocker, app, schema, error):
     result = mocker.Mock()
     result.fetchone.return_value = None
     mocker.patch('auth.services.repo', return_value=result)
@@ -80,4 +84,4 @@ def test_login_account_not_found(mocker, app, schema):
                      return_value=True)
         with pytest.raises(ValidationError) as excinfo:
             schema.load(login_data)
-        assert 'username_or_email' in excinfo.value.messages
+        assert excinfo.value.messages == error

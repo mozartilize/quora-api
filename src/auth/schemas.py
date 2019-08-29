@@ -40,6 +40,10 @@ class LoginSchema(Schema):
         else:
             raise ValidationError('Not found', 'username_or_email')
 
+    def handle_error(self, exc, data, **kwargs):
+        raise ValidationError(
+            {'_schema': 'Authentication failed'}, data, **kwargs)
+
 
 LoginSchema.set_retrieve_account(retrieve_account)
 LoginSchema.set_verify_password(verify_password)
