@@ -20,7 +20,7 @@ flask-restful = "^0.3.6"
 python-dotenv = {version = "^0.8.2", optional = true, extras = ["dotenv"]}
 marshmallow = {version = "^3.0-beta.11", allows-prereleases = true}
 flask-migrate = "^2.1"
-pyjwt = "^1.6"
+pyjwt = "^2.4"
 passlib = "^1.7"
 flask-sqlalchemy = "^2.3"
 bcrypt = {version = "^3.1", optional = true, extras = ["passlib"]}
